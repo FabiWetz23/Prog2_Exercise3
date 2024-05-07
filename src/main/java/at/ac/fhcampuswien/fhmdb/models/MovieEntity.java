@@ -4,39 +4,39 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable (tableName = "Movie")
 public class MovieEntity {
     @DatabaseField(generatedId = true)
-    private Long id;
+    public Long id;
 
 
     @DatabaseField
-    private String title;
+    public String title;
 
     @DatabaseField
-    private String description;
+    public String description;
 
     /*
     @DatabaseField
     private String genres;
 */
     @DatabaseField
-    private int releaseYear;
+    public int releaseYear;
 
     @DatabaseField
-    private String imgUrl;
+    public String imgUrl;
 
     @DatabaseField
-    private int lengthInMinutes;
+    public int lengthInMinutes;
 
     @DatabaseField
-    private String directors;
+    public String directors;
 
     @DatabaseField
-    private String writers;
+    public String writers;
 
     @DatabaseField
-    private String mainCast;
+    public String mainCast;
 
     @DatabaseField
-    private double rating;
+    public double rating;
 
     // Weitere Eigenschaften und Getter/Setters
 
