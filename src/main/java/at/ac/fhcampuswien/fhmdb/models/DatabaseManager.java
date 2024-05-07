@@ -41,7 +41,7 @@ public class DatabaseManager {
     }
 
     public void testDB() throws SQLException {
-        MovieEntity movie = new MovieEntity("title", "description", 12, "img", 12, "director", "writer", "Cast", 12);
+        MovieEntity movie = new MovieEntity("title", "description", 12, "img", 12, "director", "writer", "Cast", 12,Genre.ACTION);
         dao.create(movie);
     }
     public Dao<MovieEntity, Long> getDao() {
