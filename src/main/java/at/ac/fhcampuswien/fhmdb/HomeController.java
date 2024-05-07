@@ -5,6 +5,7 @@ import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -54,11 +55,20 @@ public class HomeController implements Initializable {
 
     protected SortedState sortedState;
 
+    public boolean isWatchlistView= false; // Flag, um anzuzeigen, ob die Watchlist angezeigt werden soll
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeState();
         initializeLayout();
     }
+
+    public void setWatchlistView(boolean isWatchlistView) {
+        this.isWatchlistView = isWatchlistView;
+        initializeLayout(); // Aktualisierung der Layout-Einstellungen
+    }
+
 
     public void initializeState() {
         List<Movie> result = MovieAPI.getAllMovies();
@@ -86,9 +96,13 @@ public class HomeController implements Initializable {
     }
 
     public void initializeLayout() {
-        movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
-
+        movieListView.setItems(observableMovies); // Setze die Items der ListView auf die ObservableList
+        // Wähle die entsprechende Zellenfabrik basierend auf dem Wert von isWatchlistView
+        if (isWatchlistView) {
+            movieListView.setCellFactory(movieListView -> new WatchlistCell());
+        } else {
+            movieListView.setCellFactory(movieListView -> new MovieCell());
+        }
         // genre combobox
         Object[] genres = Genre.values();   // get all genres
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
@@ -124,6 +138,7 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(movies);
     }
+
 
     public void sortMovies(){
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
@@ -217,22 +232,32 @@ public class HomeController implements Initializable {
         sortMovies();
     }
 
-    public void fhmdbButtonClicked(ActionEvent actionEvent) throws IOException {
+    public void fhmdbButtonClicked(ActionEvent actionEvent) {
+        isWatchlistView = false;
+        loadFXML("home-view.fxml");
+    }
+
+    public void watchlistButtonClicked(ActionEvent actionEvent) {
+        isWatchlistView = true;
+        loadFXML("watchlist-view.fxml");
+    }
+    private void loadFXML(String fxmlFileName) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = ((Node) actionEvent.getSource()).getScene();
-            scene.setRoot(root);
-            Stage stage = (Stage) scene.getWindow();
-            stage.setTitle("FHMDb!");
-            stage.show();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
+
+            Scene scene = new Scene(fxmlLoader.load(), 890, 620);
+
+            HomeController controller = fxmlLoader.getController();
+            controller.setWatchlistView(isWatchlistView); // Hier wird die Flag an den geladenen Controller übergeben
+
+            Stage stage = (Stage) movieListView.getScene().getWindow();
+            stage.setScene(scene);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void watchlistButtonClicked(ActionEvent actionEvent) {
-    }
 
     // count which actor is in the most movies
     public String getMostPopularActor(List<Movie> movies) {

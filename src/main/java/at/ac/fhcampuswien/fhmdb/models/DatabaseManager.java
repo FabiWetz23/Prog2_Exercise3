@@ -44,4 +44,5 @@ public class DatabaseManager {
         MovieEntity movie = new MovieEntity("title", "description", 12, "img", 12, "director", "writer", "Cast", 12);
         dao.create(movie);
     }
+
 }
