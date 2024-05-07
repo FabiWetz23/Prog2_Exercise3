@@ -1,7 +1,13 @@
 package at.ac.fhcampuswien.fhmdb.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,9 +40,44 @@ public class MovieEntity {
     @DatabaseField
     public double rating;
 
-    // Weitere Eigenschaften und Getter/Setters
-
     public MovieEntity(){}
+
+            private static final String CACHE_FILE = "api_cache.json";
+
+            public static JSONObject loadCache() throws IOException, ParseException {
+                File file = new File(CACHE_FILE);
+                if (file.exists()) {
+                    JSONParser parser = new JSONParser();
+                    try (FileReader reader = new FileReader(file)) {
+                        return (JSONObject) parser.parse(reader);
+                    }
+                }
+                return null;
+            }
+
+            public static void saveCache(JSONObject data) throws IOException {
+                File file = new File(CACHE_FILE);
+                try (FileWriter writer = new FileWriter(file)) {
+                    writer.write(data.toJSONString());
+                }
+            }
+    public void saveDetailsToCache() throws IOException {
+        JSONObject jsonMovie = new JSONObject();
+        jsonMovie.put("id", id);
+        jsonMovie.put("title", title);
+        jsonMovie.put("description", description);
+        jsonMovie.put("genresToString", genresToString);
+        jsonMovie.put("releaseYear", releaseYear);
+        jsonMovie.put("imgUrl", imgUrl);
+        jsonMovie.put("lengthInMinutes", lengthInMinutes);
+        jsonMovie.put("rating", rating);
+
+        // Speichern des JSON-Objekts in die Cache-Datei
+        saveCache(jsonMovie);
+    }
+
+
+
     public MovieEntity(String title, String description, int releaseYear, String imgUrl, int lengthInMinutes, String directors, String writers, String mainCast, double rating, Genre genre) {
         this.title = title;
         this.description = description;

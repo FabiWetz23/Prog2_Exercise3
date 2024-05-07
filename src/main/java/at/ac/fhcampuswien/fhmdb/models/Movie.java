@@ -18,6 +18,8 @@ public class Movie {
     private final List<String> mainCast = new ArrayList<>();
     private double rating; // 0-10
 
+
+
     @Override
     public String toString() {
         return this.title;
