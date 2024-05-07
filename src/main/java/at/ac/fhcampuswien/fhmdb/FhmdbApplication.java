@@ -20,7 +20,7 @@ public class FhmdbApplication extends Application {
         stage.setScene(scene);
         stage.show();
         try {
-            DatabaseManager.getDatabaseManager().TestDB();
+            DatabaseManager.getDatabaseManager().testDB();
         } catch (SQLException e) {
             e.printStackTrace();
         }

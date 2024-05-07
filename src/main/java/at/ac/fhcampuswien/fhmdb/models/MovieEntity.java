@@ -3,7 +3,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable (tableName = "Movie")
 public class MovieEntity {
-    @DatabaseField(id = true,generatedId = true)
+    @DatabaseField(generatedId = true)
     private Long id;
 
 
@@ -40,7 +40,7 @@ public class MovieEntity {
 
     // Weitere Eigenschaften und Getter/Setters
 
-
+    public MovieEntity(){}
     public MovieEntity(String title, String description, int releaseYear, String imgUrl, int lengthInMinutes, String directors, String writers, String mainCast, double rating) {
         this.title = title;
         this.description = description;
