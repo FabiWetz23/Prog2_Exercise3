@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -16,14 +17,23 @@
          <Insets bottom="7.0" left="10.0" top="7.0" />
       </padding>
       <children>
-         <Label style="-fx-background-color: F5C518;" text="FHMDb">
+         <!-- Ändere das Label in einen Button -->
+         <Button style="-fx-background-color: #F5C518;" text="FHMDb" onAction="#fhmdbButtonClicked">
             <font>
                <Font name="Calibri Bold" size="24.0" />
             </font>
             <padding>
                <Insets left="2.0" right="2.0" />
             </padding>
-         </Label>
+         </Button>
+         <Button style="-fx-background-color: #F5C518;" text="Watchlist" onAction="#watchlistButtonClicked">
+            <font>
+               <Font name="Calibri Bold" size="24.0" />
+            </font>
+            <padding>
+               <Insets left="2.0" right="2.0" />
+            </padding>
+         </Button>
          <Label styleClass="text-white" stylesheets="@styles.css" text="Welcome to FHMDb!" />
       </children>
    </HBox>

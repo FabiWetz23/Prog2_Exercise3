@@ -9,6 +9,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.HBox;
+
 
 import java.util.stream.Collectors;
 
@@ -17,12 +19,15 @@ public class MovieCell extends ListCell<Movie> {
     private final Label detail = new Label();
     private final Label genre = new Label();
     private final JFXButton detailBtn = new JFXButton("Show Details");
-    private final VBox layout = new VBox(title, detail, genre, detailBtn);
+    private final JFXButton addToWatchlistBtn = new JFXButton("Zur Watchlist");
+    private final HBox buttonsContainer = new HBox(detailBtn, addToWatchlistBtn);
+    private final VBox layout = new VBox(title, detail, genre, buttonsContainer);
     private boolean collapsedDetails = true;
 
     public MovieCell() {
         super();
         // color scheme
+        addToWatchlistBtn.setStyle("-fx-background-color: #f5c518;");
         detailBtn.setStyle("-fx-background-color: #f5c518;");
         title.getStyleClass().add("text-yellow");
         detail.getStyleClass().add("text-white");
@@ -36,6 +41,7 @@ public class MovieCell extends ListCell<Movie> {
         layout.setPadding(new Insets(10));
         layout.spacingProperty().set(10);
         layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setMargin(addToWatchlistBtn, new Insets(0, 0, 0, 10));
 
         detailBtn.setOnMouseClicked(mouseEvent -> {
             if (collapsedDetails) {

@@ -12,9 +12,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -211,6 +217,23 @@ public class HomeController implements Initializable {
         sortMovies();
     }
 
+    public void fhmdbButtonClicked(ActionEvent actionEvent) throws IOException {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = ((Node) actionEvent.getSource()).getScene();
+            scene.setRoot(root);
+            Stage stage = (Stage) scene.getWindow();
+            stage.setTitle("FHMDb!");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void watchlistButtonClicked(ActionEvent actionEvent) {
+    }
+
     // count which actor is in the most movies
     public String getMostPopularActor(List<Movie> movies) {
         String actor = movies.stream()
@@ -243,4 +266,5 @@ public class HomeController implements Initializable {
                 .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
                 .collect(Collectors.toList());
     }
+
 }
