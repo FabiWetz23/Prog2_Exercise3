@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-public class WatchlistMovieEntity {
+public class WatchlistMovieEntity extends MovieEntity{
 
         private long id;
         private String apiId;

@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -119,5 +121,25 @@ public class MovieEntity {
     public static String genresToString(Genre genre) {
         return genre.name();
     }
+    public static List<MovieEntity> fromMovies(List<Movie> movies) {
+        List<MovieEntity> movieEntities = new ArrayList<>();
+        for (Movie movie : movies) {
+            MovieEntity entity = new MovieEntity();
+            entity.title = movie.getTitle();
+            entity.description = movie.getDescription();
+            entity.releaseYear = movie.getReleaseYear();
+            entity.imgUrl = movie.getImgUrl();
+            entity.lengthInMinutes = movie.getLengthInMinutes();
+            entity.rating = movie.getRating();
+            movieEntities.add(entity);
+        }
+
+        return movieEntities;
+    }
+
+
+
+
+
 
 }
