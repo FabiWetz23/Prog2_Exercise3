@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -218,6 +219,12 @@ public class HomeController implements Initializable {
         }
 
         try {
+            if (searchQuery.isEmpty() && genre == null && releaseYear == null && ratingFrom == null) {
+                // Wenn keine Filter ausgewählt sind, zeige eine Fehlermeldung an
+                showAlert("Error", "No filter criteria selected", "Please select at least one filter criteria.");
+                return;
+            }
+
             List<Movie> movies = getMovies(searchQuery, genre, releaseYear, ratingFrom);
             setMovies(movies);
             setMovieList(movies);
@@ -273,7 +280,6 @@ public class HomeController implements Initializable {
         }
     }
 
-
     // count which actor is in the most movies
     public String getMostPopularActor(List<Movie> movies) {
         String actor = movies.stream()
@@ -305,6 +311,15 @@ public class HomeController implements Initializable {
         return movies.stream()
                 .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
                 .collect(Collectors.toList());
+    }
+
+    // Methode zum Anzeigen einer Alert-Box für Fehlermeldungen
+    private void showAlert(String title, String headerText, String contentText) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
 }
