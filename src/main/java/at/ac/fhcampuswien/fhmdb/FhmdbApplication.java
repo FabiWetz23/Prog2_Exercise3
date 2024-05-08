@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.DatabaseManager;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.MovieEntity;
@@ -46,6 +47,8 @@ public class FhmdbApplication extends Application {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
         }
         try {
             JSONObject cachedData = loadCache();

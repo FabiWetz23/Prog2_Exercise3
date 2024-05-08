@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -17,33 +18,52 @@ public class DatabaseManager {
     private Dao<MovieEntity, Long> dao;
     private static DatabaseManager instance;
 
-
-
-    private DatabaseManager() throws SQLException {
-        createConnectionSource();
-        dao = DaoManager.createDao(connectionSource, MovieEntity.class);
-        createTables();
+    private DatabaseManager() throws DatabaseException {
+        try {
+            createConnectionSource();
+            dao = DaoManager.createDao(connectionSource, MovieEntity.class);
+            createTables();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error initializing database: " + e.getMessage());
+        }
     }
 
-    private void createTables() throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, MovieEntity.class);
+    public void createTables() throws DatabaseException {
+        try {
+            TableUtils.createTableIfNotExists(connectionSource, MovieEntity.class);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating tables: " + e.getMessage());
+        }
     }
 
-    private void createConnectionSource() throws SQLException {
-        connectionSource = new JdbcConnectionSource(url, username, password);
+    public void createConnectionSource() throws DatabaseException {
+        try {
+            connectionSource = new JdbcConnectionSource(url, username, password);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating connection source: " + e.getMessage());
+        }
     }
 
-    public static DatabaseManager getDatabaseManager() throws SQLException {
+    public static DatabaseManager getDatabaseManager() throws DatabaseException {
         if (instance == null) {
-            instance = new DatabaseManager();
+            try {
+                instance = new DatabaseManager();
+            } catch (DatabaseException e) {
+                throw new DatabaseException("Error getting database manager: " + e.getMessage());
+            }
         }
         return instance;
     }
 
-    public void testDB() throws SQLException {
-        MovieEntity movie = new MovieEntity("title", "description", 12, "img", 12, "director", "writer", "Cast", 12,Genre.ACTION);
-        dao.create(movie);
+    public void testDB() throws DatabaseException {
+        try {
+            MovieEntity movie = new MovieEntity("title", "description", 12, "img", 12, "director", "writer", "Cast", 12, Genre.ACTION);
+            dao.create(movie);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error testing database: " + e.getMessage());
+        }
     }
+
     public Dao<MovieEntity, Long> getDao() {
         return dao;
     }
