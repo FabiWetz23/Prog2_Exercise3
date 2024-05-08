@@ -1,10 +1,14 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import okhttp3.*;
 import com.google.gson.Gson;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +30,7 @@ public class MovieAPI {
     private static String buildUrl(String query, Genre genre, String releaseYear, String ratingFrom) {
         StringBuilder url = new StringBuilder(URL);
 
-        if ( (query != null && !query.isEmpty()) ||
+        if ((query != null && !query.isEmpty()) ||
                 genre != null || releaseYear != null || ratingFrom != null) {
 
             url.append("?");
@@ -49,11 +53,11 @@ public class MovieAPI {
         return url.toString();
     }
 
-    public static List<Movie> getAllMovies() {
+    public static List<Movie> getAllMovies() throws MovieApiException {
         return getAllMovies(null, null, null, null);
     }
 
-    public static List<Movie> getAllMovies(String query, Genre genre, String releaseYear, String ratingFrom){
+    public static List<Movie> getAllMovies(String query, Genre genre, String releaseYear, String ratingFrom) throws MovieApiException {
         String url = buildUrl(query, genre, releaseYear, ratingFrom);
         Request request = new Request.Builder()
                 .url(url)
@@ -62,30 +66,35 @@ public class MovieAPI {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new MovieApiException("Error retrieving movies from the API: " + response.message());
+            }
+
             String responseBody = response.body().string();
             Gson gson = new Gson();
             Movie[] movies = gson.fromJson(responseBody, Movie[].class);
 
             return Arrays.asList(movies);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            throw new MovieApiException("Error communicating with the API: " + e.getMessage());
         }
-        return new ArrayList<>();
     }
 
-    public Movie requestMovieById(UUID id){
+    public Movie requestMovieById(UUID id) throws MovieApiException {
         String url = buildUrl(id);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new MovieApiException("Error retrieving movie by ID from the API: " + response.message());
+            }
+
             Gson gson = new Gson();
             return gson.fromJson(response.body().string(), Movie.class);
-        } catch (Exception e) {
-            System.err.println(this.getClass() + ": http status not ok");
+        } catch (IOException e) {
+            throw new MovieApiException("Error communicating with the API: " + e.getMessage());
         }
-
-        return null;
     }
 }
